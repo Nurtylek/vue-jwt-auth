@@ -13,10 +13,9 @@ export default {
     name: "dashboard",
     setup() {
         const store = useStore();
-
         const username = computed(() => {
             return store.getters.username;
-        })
+        });
 
         return {username}
     }

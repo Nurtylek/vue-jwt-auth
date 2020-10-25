@@ -16,7 +16,7 @@ export default createStore({
         }
     },
     actions: {
-        login({commit, dispatch}, {username, password}) {
+        login({commit}, {username, password}) {
             return new Promise((resolve) => {
                 setTimeout(() => {
 
@@ -24,13 +24,9 @@ export default createStore({
                         username,
                         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
                     });
-                    const now = new Date();
-                    const expirationDate = new Date(now.getTime() + (3600 * 1000));
 
                     localStorage.setItem('username', username)
                     localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c');
-                    localStorage.setItem('expirationDate', JSON.stringify(expirationDate));
-                    dispatch('logoutTimer', 3600);
 
                     resolve({username, password});
                 }, 1000);
@@ -40,22 +36,10 @@ export default createStore({
             commit('logout');
             localStorage.clear();
         },
-        logoutTimer({commit}, expirationTime) {
-            setTimeout(() => {
-                commit('logout');
-            }, expirationTime * 1000)
-        },
         autoLogin({commit}) {
             const token = localStorage.getItem('token');
 
             if (!token) {
-                return;
-            }
-
-            const expirationDate = localStorage.getItem('expirationDate');
-            const now = new Date();
-
-            if (now >= expirationDate) {
                 return;
             }
             commit('storeUser', {username: 'nurtilek', token})
@@ -66,7 +50,7 @@ export default createStore({
             return state && state.username;
         },
         isAuthenticated(state) {
-            return state.token !== '';
+            return state.token;
         }
     }
 })

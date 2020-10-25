@@ -2,7 +2,7 @@
     <div id="welcome">
         <h1>JWT Auth Vue!</h1>
         <div class="cta">
-            <router-link to="/signin">Sign In</router-link>
+            <router-link class="cta__link" to="/signin">Sign In</router-link>
         </div>
     </div>
 </template>
@@ -33,7 +33,7 @@ p {
     text-align: center;
 }
 
-.cta a {
+.cta .cta__link {
     margin: 10px;
     text-decoration: none;
     display: inline-block;
@@ -45,8 +45,8 @@ p {
     color: #521751;
 }
 
-.cta a:hover,
-.cta a:active {
+.cta .cta__link:hover,
+.cta .cta__link:active {
     background-color: #521751;
     color: white;
 }

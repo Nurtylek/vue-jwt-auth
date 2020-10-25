@@ -10,7 +10,14 @@ const routes = [
     },
     {
         path: '/signin',
-        component: () => import(/* webpackChunkName: "signin" */ '@/components/auth/signin.vue')
+        component: () => import(/* webpackChunkName: "signin" */ '@/components/auth/signin.vue'),
+        beforeEnter(to, from, next) {
+            if (!store.state.token) {
+                next()
+            } else {
+                next(from.path)
+            }
+        }
     },
     {
         path: '/dashboard',

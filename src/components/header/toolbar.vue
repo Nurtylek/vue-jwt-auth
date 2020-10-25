@@ -8,12 +8,14 @@
                 <li v-if="!isAuthenticated">
                     <router-link to="/signin">Sign In</router-link>
                 </li>
-                <li v-if="isAuthenticated">
-                    <router-link to="/dashboard">Dashboard</router-link>
-                </li>
-                <li v-if="isAuthenticated">
-                    <button @click="logout">logout</button>
-                </li>
+                <template v-else>
+                    <li>
+                        <router-link to="/dashboard">Dashboard</router-link>
+                    </li>
+                    <li>
+                        <button @click="logout">logout</button>
+                    </li>
+                </template>
             </ul>
         </nav>
     </header>
@@ -23,10 +25,11 @@
 import {computed} from 'vue';
 import {useStore} from 'vuex';
 import {useRouter} from 'vue-router';
+
 export default {
     name: "toolbar",
     setup() {
-        const store  = useStore();
+        const store = useStore();
         const router = useRouter();
         const isAuthenticated = computed(() => {
             return store.getters.isAuthenticated;
@@ -34,7 +37,7 @@ export default {
 
         function logout() {
             store.dispatch('logout');
-            router.push('/')
+            router.replace('/')
         }
 
         return {

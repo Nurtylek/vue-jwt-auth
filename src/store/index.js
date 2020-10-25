@@ -1,12 +1,72 @@
-import { createStore } from 'vuex'
+import {createStore} from 'vuex'
 
 export default createStore({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
+    state: {
+        token: '',
+        username: ''
+    },
+    mutations: {
+        storeUser(state, {username, token}) {
+            state.token = token;
+            state.username = username;
+        },
+        logout(state) {
+            state.token = '';
+            state.username = '';
+        }
+    },
+    actions: {
+        login({commit, dispatch}, {username, password}) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+
+                    commit('storeUser', {
+                        username,
+                        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+                    });
+                    const now = new Date();
+                    const expirationDate = new Date(now.getTime() + (3600 * 1000));
+
+                    localStorage.setItem('username', username)
+                    localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c');
+                    localStorage.setItem('expirationDate', JSON.stringify(expirationDate));
+                    dispatch('logoutTimer', 3600);
+
+                    resolve({username, password});
+                }, 1000);
+            });
+        },
+        logout({commit}) {
+            commit('logout');
+            localStorage.clear();
+        },
+        logoutTimer({commit}, expirationTime) {
+            setTimeout(() => {
+                commit('logout');
+            }, expirationTime * 1000)
+        },
+        autoLogin({commit}) {
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                return;
+            }
+
+            const expirationDate = localStorage.getItem('expirationDate');
+            const now = new Date();
+
+            if (now >= expirationDate) {
+                return;
+            }
+            commit('storeUser', {username: 'nurtilek', token})
+        }
+    },
+    getters: {
+        username(state) {
+            return state && state.username;
+        },
+        isAuthenticated(state) {
+            return state.token !== '';
+        }
+    }
 })
